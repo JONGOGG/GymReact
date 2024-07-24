@@ -6,6 +6,7 @@ import LoginScreen from '../screens/LoginScreen';
 import AdminScreen from '../screens/AdminScreen';
 import ClientScreen from '../screens/ClientScreen';
 
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {

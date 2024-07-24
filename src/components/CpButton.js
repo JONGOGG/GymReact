@@ -11,15 +11,17 @@ const CustomButton = ({ title, onPress }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     marginVertical: 10,
+   
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
