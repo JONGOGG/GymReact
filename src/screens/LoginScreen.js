@@ -8,23 +8,23 @@ import logo from '../../assets/img/logo.jpg';
 import back from '../../assets/img/back2.jpg';
 
 const LoginScreen = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [user, setUser] = useState('');
+  const [pass, setPass] = useState('');
   const navigation = useNavigation();
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/users', {
-        username,
-        password
+      const response = await axios.post('https://apirestgym-production-23c8.up.railway.app/login', {
+        user,
+        pass
       });
 
       if (response.status === 200) {
-        const { token, role } = response.data;
+        const { token, rol } = response.data;
         await AsyncStorage.setItem('userToken', token);
-        await AsyncStorage.setItem('userRole', role);
+        await AsyncStorage.setItem('userrol', rol);
 
-        if (role === 'admin') {
+        if (rol === 'admin') {
           navigation.navigate('Admin');
         } else {
           navigation.navigate('Client');
@@ -42,17 +42,17 @@ const LoginScreen = () => {
     <ImageBackground source={back} style={styles.backgroundImage}>
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />
-        <Text style={styles.label}>Username</Text>
+        <Text style={styles.label}>nombre</Text>
         <TextInput
-          value={username}
-          onChangeText={setUsername}
+          value={user}
+          onChangeText={setUser}
           autoCapitalize="none"
           style={styles.input}
         />
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>Pass</Text>
         <TextInput
-          value={password}
-          onChangeText={setPassword}
+          value={pass}
+          onChangeText={setPass}
           secureTextEntry
           style={styles.input}
         />
@@ -103,8 +103,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   
-
-
 });
 
 export default LoginScreen;

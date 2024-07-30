@@ -1,18 +1,17 @@
+
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import RegistroScreen from './RegistroScreen';
+
+
+const Tab = createBottomTabNavigator();
 
 const AdminScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>Bienbenido, Admin!</Text>
-    </View>
+    <Tab.Navigator>
+      <Tab.Screen name="Registrar" component={RegistroScreen} />
+    </Tab.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-});
 
 export default AdminScreen;
