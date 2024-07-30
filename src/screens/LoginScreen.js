@@ -30,7 +30,7 @@ const LoginScreen = () => {
           navigation.navigate('Client');
         }
       } else {
-        Alert.alert('Login Error', 'Token invalido');
+        Alert.alert('Login Error', 'Contraseña o Usuario incorrecto');
       }
     } catch (error) {
       Alert.alert('Login Error', 'Hubo un error en el servidor.');
@@ -42,14 +42,14 @@ const LoginScreen = () => {
     <ImageBackground source={back} style={styles.backgroundImage}>
       <View style={styles.container}>
         <Image source={logo} style={styles.logo} />
-        <Text style={styles.label}>nombre</Text>
+        <Text style={styles.label}>Usuario</Text>
         <TextInput
           value={user}
           onChangeText={setUser}
           autoCapitalize="none"
           style={styles.input}
         />
-        <Text style={styles.label}>Pass</Text>
+        <Text style={styles.label}>Contraseña</Text>
         <TextInput
           value={pass}
           onChangeText={setPass}
