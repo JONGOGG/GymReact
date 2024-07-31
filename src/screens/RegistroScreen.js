@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Alert, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import ReButton from '../components/ReButton';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const RegistroScreen = () => {
   const [nombre, setNombre] = useState('');
@@ -19,6 +20,10 @@ const RegistroScreen = () => {
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
   const [tipo_usuario, setTipoUsuario] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('success');
 
   const navigation = useNavigation();
 
@@ -39,13 +44,21 @@ const RegistroScreen = () => {
 
       if (response.status === 200) {
         const { title, alertMessage } = response.data;
-        Alert.alert(title, alertMessage);
+        setAlertTitle(title);
+        setAlertMessage(alertMessage);
+        setAlertType('success');
       } else {
-        Alert.alert('Registro Error', 'Hubo un error durante el registro.');
+        setAlertTitle('Registro Error');
+        setAlertMessage('Hubo un error durante el registro.');
+        setAlertType('error');
       }
     } catch (error) {
-      Alert.alert('Registro Error', 'Hubo un error en el servidor.');
+      setAlertTitle('Registro Error');
+      setAlertMessage('Hubo un error en el servidor.');
+      setAlertType('error');
       console.error(error);
+    } finally {
+      setShowAlert(true);
     }
   };
 
@@ -141,6 +154,18 @@ const RegistroScreen = () => {
           <ReButton title="Registrar" style={styles.button} onPress={handleRegister} />
         </View>
       </ScrollView>
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title={alertTitle}
+        message={alertMessage}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor="#DD6B55"
+        onConfirmPressed={() => setShowAlert(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -192,7 +217,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginVertical: 10,
-   
   },
   buttonText: {
     color: '#000',
