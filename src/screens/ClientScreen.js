@@ -2,9 +2,10 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import RutinasScreen from './RutinasScreen';
 import DietasScreen from './DietasScreen';
-import EjerciciosScreen from './EjerciciosScreen';
+import EjemplosScreen from './EjemplosScreen';
 import PerfilScreen from './PerfilScreen';
 import { Ionicons } from '@expo/vector-icons';
+import DetalleEjercicio from './DetallesEjerScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -41,8 +42,9 @@ const ClientScreen = () => {
       })}
     >
       <Tab.Screen name="Rutinas" component={RutinasScreen} />
+      <Tab.Screen name="Ejercicios" component={DetalleEjercicio} />
       <Tab.Screen name="Dietas" component={DietasScreen} />
-      <Tab.Screen name="Ejercicios" component={EjerciciosScreen} />
+      <Tab.Screen name="Ejemplos" component={EjemplosScreen} />
       <Tab.Screen name="Perfil" component={PerfilScreen} />
     </Tab.Navigator>
   );
