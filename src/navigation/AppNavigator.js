@@ -6,7 +6,6 @@ import LoginScreen from '../screens/LoginScreen';
 import AdminScreen from '../screens/AdminScreen';
 import ClientScreen from '../screens/ClientScreen';
 
-
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -31,7 +30,18 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={initialRoute}>
+      <Stack.Navigator
+        initialRouteName={initialRoute}
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#000', // Color de fondo negro
+          },
+          headerTintColor: '#fff', // Color del texto blanco
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Admin" component={AdminScreen} />
         <Stack.Screen name="Client" component={ClientScreen} />

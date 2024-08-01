@@ -31,7 +31,7 @@ const ClientScreen = () => {
         tabBarActiveTintColor: '#e91e63',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
-          backgroundColor: '#ffffff',
+          backgroundColor: '#0000',
           paddingBottom: 5,
           height: 60,
         },
