@@ -5,10 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginScreen from '../screens/LoginScreen';
 import AdminScreen from '../screens/AdminScreen';
 import ClientScreen from '../screens/ClientScreen';
-<<<<<<< HEAD
-=======
-import Icon from 'react-native-vector-icons/FontAwesome';
->>>>>>> 7a42468 (Diseno de formulario de registro)
+
 
 const Stack = createStackNavigator();
 
