@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, TextInput, SafeAreaView, ScrollView, ImageBackground, StyleSheet } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
@@ -14,9 +14,6 @@ const RegistroScreen = () => {
   const [sexo, setSexo] = useState('');
   const [peso, setPeso] = useState('');
   const [estatura, setEstatura] = useState('');
-  const [estado_suscripcion, setEstadoSuscripcion] = useState('');
-  const [dias_suscripcion, setDiasSuscripcion] = useState('');
-  const [tipo_rutina, setTipoRutina] = useState('');
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
   const [tipo_usuario, setTipoUsuario] = useState('');
@@ -62,95 +59,109 @@ const RegistroScreen = () => {
     }
   };
 
-  // Listas de opciones para los selectores de peso y estatura
   const pesoOptions = Array.from({ length: 151 }, (_, i) => (i + 50).toString());
   const estaturaOptions = Array.from({ length: 71 }, (_, i) => (i + 130).toString());
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollView}>
+        <ImageBackground
+          source={require('../../assets/img/espal2.jpeg')}
+          style={styles.imageBackground}
+        />
+        <View style={styles.overlay} />
         <View style={styles.container}>
-          <Text style={styles.label}>Nombre</Text>
           <TextInput
             value={nombre}
             onChangeText={setNombre}
+            placeholder="Ingrese su nombre"
             style={styles.input}
+            placeholderTextColor="rgba(0, 0, 0, 0.7)"
           />
-          <Text style={styles.label}>Apellidos</Text>
           <TextInput
             value={apellidos}
             onChangeText={setApellidos}
+            placeholder="Ingrese sus apellidos"
             style={styles.input}
+            placeholderTextColor="rgba(0, 0, 0, 0.7)"
           />
-          <Text style={styles.label}>Email</Text>
           <TextInput
             value={email}
             onChangeText={setEmail}
+            placeholder="Ingrese su email"
             autoCapitalize="none"
             style={styles.input}
+            placeholderTextColor="rgba(0, 0, 0, 0.7)"
           />
-          <Text style={styles.label}>Teléfono</Text>
           <TextInput
             value={telefono}
             onChangeText={setTelefono}
+            placeholder="Ingrese su teléfono"
             style={styles.input}
+            placeholderTextColor="rgba(0, 0, 0, 0.7)"
           />
-          <Text style={styles.label}>Sexo</Text>
-          <Picker
-            selectedValue={sexo}
-            onValueChange={(itemValue) => setSexo(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Seleccione..." value="" />
-            <Picker.Item label="Masculino" value="Masculino" />
-            <Picker.Item label="Femenino" value="Femenino" />
-          </Picker>
-          <Text style={styles.label}>Peso (kg)</Text>
-          <Picker
-            selectedValue={peso}
-            onValueChange={(itemValue) => setPeso(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Seleccione..." value="" />
-            {pesoOptions.map(peso => (
-              <Picker.Item key={peso} label={peso} value={peso} />
-            ))}
-          </Picker>
-          <Text style={styles.label}>Estatura (cm)</Text>
-          <Picker
-            selectedValue={estatura}
-            onValueChange={(itemValue) => setEstatura(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Seleccione..." value="" />
-            {estaturaOptions.map(estatura => (
-              <Picker.Item key={estatura} label={estatura} value={estatura} />
-            ))}
-          </Picker>
-          <Text style={styles.label}>Usuario</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={sexo}
+              onValueChange={(itemValue) => setSexo(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Selecciona tu sexo:" value="" />
+              <Picker.Item label="Masculino" value="Masculino" />
+              <Picker.Item label="Femenino" value="Femenino" />
+            </Picker>
+          </View>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={peso}
+              onValueChange={(itemValue) => setPeso(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Peso..." value="" />
+              {pesoOptions.map(peso => (
+                <Picker.Item key={peso} label={peso} value={peso} />
+              ))}
+            </Picker>
+          </View>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={estatura}
+              onValueChange={(itemValue) => setEstatura(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Estatura..." value="" />
+              {estaturaOptions.map(estatura => (
+                <Picker.Item key={estatura} label={estatura} value={estatura} />
+              ))}
+            </Picker>
+          </View>
           <TextInput
             value={user}
             onChangeText={setUser}
+            placeholder="Ingrese su usuario"
             autoCapitalize="none"
             style={styles.input}
+            placeholderTextColor="rgba(0, 0, 0, 0.7)"
           />
-          <Text style={styles.label}>Contraseña</Text>
           <TextInput
             value={pass}
             onChangeText={setPass}
+            placeholder="Ingrese su contraseña"
             secureTextEntry
             style={styles.input}
+            placeholderTextColor="rgba(0, 0, 0, 0.7)"
           />
-          <Text style={styles.label}>Tipo de Usuario</Text>
-          <Picker
-            selectedValue={tipo_usuario}
-            onValueChange={(itemValue) => setTipoUsuario(itemValue)}
-            style={styles.picker}
-          >
-            <Picker.Item label="Seleccione..." value="" />
-            <Picker.Item label="Admin" value="admin" />
-            <Picker.Item label="Client" value="client" />
-          </Picker>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={tipo_usuario}
+              onValueChange={(itemValue) => setTipoUsuario(itemValue)}
+              style={styles.picker}
+            >
+              <Picker.Item label="Rol: Usuer/Admin" value="" />
+              <Picker.Item label="Admin" value="admin" />
+              <Picker.Item label="Client" value="client" />
+            </Picker>
+          </View>
           <ReButton title="Registrar" style={styles.button} onPress={handleRegister} />
         </View>
       </ScrollView>
@@ -173,46 +184,70 @@ const RegistroScreen = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#9aa1a1',
   },
-  scrollView: {
-    padding: 16,
+  imageBackground: {
+    height: 150,
+    width: '100%',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 150, // Posiciona el overlay justo debajo de la imagen
+    left: 0,
+    right: 0,
+    height: 9, 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5, 
+    zIndex: 1, 
+    opacity: 1,
   },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 10,
     width: '100%',
+    marginTop: 25,
+    zIndex: 2, 
   },
   input: {
-    height: 40,
+    height: 60,
     width: '80%',
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
     backgroundColor: 'white',
-    opacity: 0.6,
+    color: 'black',
     borderRadius: 10,
+    opacity: 0.8,
+    fontWeight: 'bold',
   },
   label: {
-    color: 'Black',
+    color: 'white',
     fontSize: 20,
     marginBottom: 10,
     fontWeight: 'bold',
   },
-  picker: {
-    height: 50,
+  pickerContainer: {
+    height: 60,
     width: '80%',
     borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 20,
     backgroundColor: 'white',
-    opacity: 0.6,
     borderRadius: 10,
+    overflow: 'hidden',
+    opacity: 0.8,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
   },
   button: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFF',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
