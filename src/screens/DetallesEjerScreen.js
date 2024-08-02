@@ -4,27 +4,46 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 const DetalleEjercicioScreen = ({ route }) => {
   const { dia, ejercicios } = route.params || {};
 
+  // Si no se proporciona día ni ejercicios, muestra un mensaje de error
   if (!dia || !ejercicios) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>No has seleccionado ningun ejercicio en el apartado de RUTINAS.</Text>
+        <Text style={styles.errorText}>
+          No has seleccionado ningún ejercicio en el apartado de RUTINAS.
+        </Text>
       </View>
     );
   }
 
+  // Filtra los ejercicios válidos
+  const ejerciciosValidos = Object.keys(ejercicios).filter((key) => {
+    const ejercicio = ejercicios[key];
+    return ejercicio.nombre && ejercicio.series && ejercicio.repeticiones;
+  });
+
+  // Si no hay ejercicios válidos, muestra un mensaje de error
+  if (ejerciciosValidos.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>No hay ejercicios disponibles para mostrar.</Text>
+      </View>
+    );
+  }
+
+  // Renderiza la lista de ejercicios
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.headerText}>{dia}</Text>
-      {Object.keys(ejercicios).map((ejercicio, idx) => (
+      {ejerciciosValidos.map((key, idx) => (
         <View key={idx} style={styles.exerciseContainer}>
-          <Text style={styles.exerciseName}>{ejercicios[ejercicio].nombre}</Text>
-          <Text>Series: {ejercicios[ejercicio].series}</Text>
-          <Text>Repeticiones: {ejercicios[ejercicio].repeticiones}</Text>
-          {ejercicios[ejercicio].instrucciones ? (
+          <Text style={styles.exerciseName}>{ejercicios[key].nombre}</Text>
+          <Text>Series: {ejercicios[key].series}</Text>
+          <Text>Repeticiones: {ejercicios[key].repeticiones}</Text>
+          {ejercicios[key].instrucciones ? (
             <>
-              <Text>Posición: {ejercicios[ejercicio].instrucciones.Posición}</Text>
-              <Text>Ejecución: {ejercicios[ejercicio].instrucciones.Ejecución}</Text>
-              <Text>Consejo: {ejercicios[ejercicio].instrucciones.Consejo}</Text>
+              <Text>Posición: {ejercicios[key].instrucciones.Posición}</Text>
+              <Text>Ejecución: {ejercicios[key].instrucciones.Ejecución}</Text>
+              <Text>Consejo: {ejercicios[key].instrucciones.Consejo}</Text>
             </>
           ) : (
             <Text>Instrucciones no disponibles</Text>
@@ -59,6 +78,11 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 18,
     color: 'red',
+    textAlign: 'center',
+  },
+  restText: {
+    fontSize: 18,
+    color: 'green',
     textAlign: 'center',
   },
 });

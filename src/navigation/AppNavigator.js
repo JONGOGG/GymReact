@@ -31,17 +31,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={initialRoute}
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: '#000', // Color de fondo negro
-          },
-          headerTintColor: '#fff', // Color del texto blanco
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        }}
-      >
+        initialRouteName={initialRoute}>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Admin" component={AdminScreen} />
         <Stack.Screen name="Client" component={ClientScreen} />

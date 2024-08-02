@@ -24,14 +24,15 @@ const ClientScreen = () => {
             iconName = 'barbell-outline';
           } else if (route.name === 'Perfil') {
             iconName = 'person-outline';
+          } else if (route.name === 'Ejemplos') {
+            iconName = 'body-outline';
           }
+          
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#e91e63',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
-          backgroundColor: '#0000',
           paddingBottom: 5,
           height: 60,
         },
