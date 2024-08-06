@@ -21,9 +21,15 @@ const AdminScreen = () => {
           const iconName = iconMap[route.name];
           return <Icon name={iconName} size={size || 20} color={color || 'black'} />;
         },
-        tabBarActiveTintColor: '#80b918',
-        tabBarInactiveTintColor: '#fff',
-        tabBarStyle: { backgroundColor: '#02010a' },
+        tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          paddingBottom: 5,
+          height: 60,
+        },
+        tabBarLabelStyle: {
+          fontSize: 14,
+          fontWeight: 'bold',
+        },
       })}
     >
       <Tab.Screen name="Registrar" component={RegistroScreen} />

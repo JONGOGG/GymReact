@@ -28,7 +28,7 @@ const ClientScreen = () => {
             iconName = 'body-outline';
           }
           
-
+          
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarInactiveTintColor: 'gray',

@@ -41,10 +41,11 @@ const LoginScreen = () => {
       // Manejar diferentes respuestas del servidor
       switch (response.status) {
         case 200:
-          const { token, rol } = response.data;
+          const { token, rol, usuario } = response.data;
           // Guardar el token y rol en AsyncStorage
           await AsyncStorage.setItem('userToken', token);
           await AsyncStorage.setItem('userrol', rol);
+          await AsyncStorage.setItem('userUser', usuario);
           // Redirigir según el rol del usuario
           navigation.navigate(rol === 'admin' ? 'Admin' : 'Client');
           break;

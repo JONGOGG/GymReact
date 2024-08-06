@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Importa AsyncStorage
 import rutinas from '../../assets/img/rutinas.png';
 
 const RutinasScreen = ({ navigation }) => {
@@ -11,15 +12,28 @@ const RutinasScreen = ({ navigation }) => {
 
   // useEffect para cargar la rutina cuando el componente se monta
   useEffect(() => {
-    axios.get('https://apirestgym-production-23c8.up.railway.app/rutina/joan')
-      .then(response => {
+    // Función para cargar el usuario y obtener la rutina
+    const fetchRutina = async () => {
+      try {
+        // Recupera el usuario del AsyncStorage
+        const AsyncUser = await AsyncStorage.getItem('userUser');
+        
+        // Verifica si el usuario está almacenado
+        if (!AsyncUser) {
+          throw new Error('Usuario no encontrado en el almacenamiento.');
+        }
+
+        // Realiza la solicitud al servidor usando el usuario almacenado
+        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/rutina/${AsyncUser}`);
         setRutina(response.data.rutina);
+      } catch (err) {
+        setError(err);
+      } finally {
         setLoading(false);
-      })
-      .catch(error => {
-        setError(error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchRutina();
   }, []);
 
   // Mostrar un indicador de carga mientras se obtienen los datos
@@ -162,6 +176,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    
+
   },
   touchableDay: {
     flex: 1,
@@ -169,6 +188,9 @@ const styles = StyleSheet.create({
   currentDayContainer: {
     backgroundColor: '#3b5998', // Color diferente para el día actual
     color: '#fff',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   currentDayText: {
     color: '#fff', // Color del texto para el día actual
