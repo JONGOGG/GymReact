@@ -9,20 +9,15 @@ import logo from '../../assets/img/logo.jpg';
 import back from '../../assets/img/back2.jpg';
 
 const LoginScreen = () => {
-  // Estado para manejar la información del usuario y la contraseña
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
-  // Estado para mostrar u ocultar la alerta y manejar su contenido
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('error');
-  // Hook de navegación para redirigir al usuario después del login
   const navigation = useNavigation();
 
-  // Función para manejar el proceso de login
   const handleLogin = async () => {
-    // Verificar que el usuario y la contraseña no estén vacíos
     if (!user || !pass) {
       setAlertTitle('Error');
       setAlertMessage('Usuario y contraseña son requeridos.');
@@ -32,22 +27,19 @@ const LoginScreen = () => {
     }
 
     try {
-      // Enviar solicitud POST al servidor para autenticación
-      const response = await axios.post('https://apirestgym-production-23c8.up.railway.app/login', {
-        user,
-        pass
-      });
+      const response = await axios.post('https://apirestgym-production-23c8.up.railway.app/login', 
+        { user, pass });
 
-      // Manejar diferentes respuestas del servidor
       switch (response.status) {
         case 200:
           const { token, rol, usuario } = response.data;
-          // Guardar el token y rol en AsyncStorage
           await AsyncStorage.setItem('userToken', token);
           await AsyncStorage.setItem('userrol', rol);
           await AsyncStorage.setItem('userUser', usuario);
-          // Redirigir según el rol del usuario
-          navigation.navigate(rol === 'admin' ? 'Admin' : 'Client');
+          navigation.reset({
+            index: 0,
+            routes: [{ name: rol === 'admin' ? 'Admin' : 'Client' }],
+          });
           break;
         case 204:
           setAlertTitle('Error');
@@ -70,7 +62,6 @@ const LoginScreen = () => {
           break;
       }
     } catch (error) {
-      // Manejo de errores en la solicitud
       if (error.response) {
           const { status, data } = error.response;
           if (status === 401) {
@@ -93,7 +84,6 @@ const LoginScreen = () => {
     }
   };
 
-  // Función para obtener los estilos de la alerta según su tipo
   const getAlertStyles = () => {
     switch (alertType) {
       case 'success':
@@ -118,15 +108,12 @@ const LoginScreen = () => {
     }
   };
 
-  // Desestructurar los estilos de alerta
   const { titleStyle, messageStyle, cancelButtonStyle } = getAlertStyles();
 
   return (
     <ImageBackground source={back} style={styles.backgroundImage}>
       <View style={styles.container}>
-        {/* Mostrar el logo */}
         <Image source={logo} style={styles.logo} />
-        {/* Campo de entrada para el usuario */}
         <Text style={styles.label}>Usuario</Text>
         <TextInput
           value={user}
@@ -134,7 +121,6 @@ const LoginScreen = () => {
           autoCapitalize="none"
           style={styles.input}
         />
-        {/* Campo de entrada para la contraseña */}
         <Text style={styles.label}>Contraseña</Text>
         <TextInput
           value={pass}
@@ -142,9 +128,7 @@ const LoginScreen = () => {
           secureTextEntry
           style={styles.input}
         />
-        {/* Botón de inicio de sesión */}
         <CpButton title="Login" style={styles.button} onPress={handleLogin} />
-        {/* Componente de alerta para mostrar mensajes de error o éxito */}
         <AwesomeAlert
           show={showAlert}
           showProgress={false}
