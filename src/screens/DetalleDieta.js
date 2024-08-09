@@ -3,10 +3,33 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import Icon from 'react-native-vector-icons/Ionicons'; // Biblioteca de iconos
 import ViewShot from 'react-native-view-shot'; // Para capturar la pantalla
 import * as Sharing from 'expo-sharing'; // Para compartir la imagen
+import { useNavigation } from '@react-navigation/native';
 
 const DetalleDietaScreen = ({ route }) => {
   const { semana, comidas } = route.params || {};
   const viewShotRef = useRef(); // Referencia para la vista que vamos a capturar
+
+  const navigation = useNavigation();
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userrol');
+    await AsyncStorage.removeItem('userUser');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
+  // Configurar el botón de cierre de sesión en el header
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   // Función para capturar la pantalla y compartirla
   const compartirDieta = async () => {
@@ -149,6 +172,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#fff',
     marginLeft: 5,
+  },
+  logoutButton: {
+    marginRight: 10,
+    padding: 10,
+    backgroundColor: '#e76755',
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

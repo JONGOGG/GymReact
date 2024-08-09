@@ -4,7 +4,7 @@ import axios from 'axios';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import UpdateUserScreen from './UpdateUserScreen'; // Importa tu pantalla de actualización
+import UpdateUserScreen from './UpdateUserScreen'; 
 
 const Stack = createNativeStackNavigator();
 
@@ -191,13 +191,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#70b1f7',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
   },
   deleteButton: {
-    backgroundColor: 'red',
+    backgroundColor: '#e76755',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   logoutButton: {
     marginRight: 10,
     padding: 10,
-    backgroundColor: 'gray',
+    backgroundColor: '#e76755',
     borderRadius: 5,
   },
   logoutButtonText: {

@@ -8,6 +8,27 @@ const DietasScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userrol');
+    await AsyncStorage.removeItem('userUser');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
+  // Configurar el botón de cierre de sesión en el header
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   useEffect(() => {
     const fetchDieta = async () => {
       try {
@@ -33,6 +54,7 @@ const DietasScreen = ({ navigation }) => {
 
     fetchDieta();
   }, []);
+
 
   if (loading) {
     return (
@@ -153,6 +175,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'red',
     textAlign: 'center',
+  },
+  logoutButton: {
+    marginRight: 10,
+    padding: 10,
+    backgroundColor: '#e76755',
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

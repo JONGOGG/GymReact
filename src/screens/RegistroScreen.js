@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, TextInput, SafeAreaView, ScrollView, Image, StyleSheet, Text } from 'react-native';
+import { View, TextInput, SafeAreaView, ScrollView, Image, StyleSheet, Text, TouchableOpacity  } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import ReButton from '../components/ReButton';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import rutinas from '../../assets/img/registro.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegistroScreen = () => {
   const [nombre, setNombre] = useState('');
@@ -24,6 +25,27 @@ const RegistroScreen = () => {
   const [alertType, setAlertType] = useState('success');
 
   const navigation = useNavigation();
+ // Función de cierre de sesión
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userrol');
+    await AsyncStorage.removeItem('userUser');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
+  // Configurar el botón de cierre de sesión en el header
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const handleRegister = async () => {
     try {
@@ -297,6 +319,16 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
+    fontWeight: 'bold',
+  },
+  logoutButton: {
+    marginRight: 10,
+    padding: 10,
+    backgroundColor: '#e76755',
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: 'white',
     fontWeight: 'bold',
   },
 });
