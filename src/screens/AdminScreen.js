@@ -71,7 +71,8 @@ const AdminScreen = () => {
         showConfirmButton={true}
         cancelText="No"
         confirmText="Sí"
-        confirmButtonColor="#DD6B55"
+        confirmButtonColor='#e76755'
+        cancelButtonColor='#70b1f7'
         onCancelPressed={() => {
           setShowExitAlert(false);
         }}

@@ -18,12 +18,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.joangzz.GymReactapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6bcfe46b-e93a-45ec-b8cc-f3fbee62d61b"
+      }
     }
-    
   }
-  
 }

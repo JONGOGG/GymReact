@@ -41,7 +41,7 @@ const DietasScreen = ({ navigation }) => {
         const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/dieta/${AsyncUser}`);
         
         if (response.data) {
-          setDieta(response.data); // Accede directamente a response.data
+          setDieta(response.data);
         } else {
           throw new Error('Datos de dieta no encontrados.');
         }

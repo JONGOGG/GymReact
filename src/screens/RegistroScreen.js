@@ -47,9 +47,12 @@ const RegistroScreen = () => {
     });
   }, [navigation]);
 
+
+    
   const handleRegister = async () => {
     try {
-      const response = await axios.post('https://apirestgym-production-23c8.up.railway.app/registro', {
+      const AsyncUser = await AsyncStorage.getItem('userUser');
+      const response = await axios.post(`https://apirestgym-production-23c8.up.railway.app/registro/${AsyncUser}`, {
         nombre,
         apellidos,
         email,
@@ -229,7 +232,7 @@ const RegistroScreen = () => {
         closeOnHardwareBackPress={false}
         showConfirmButton={true}
         confirmText="OK"
-        confirmButtonColor="#DD6B55"
+        confirmButtonColor="#84dd55"
         onConfirmPressed={() => setShowAlert(false)}
       />
     </SafeAreaView>

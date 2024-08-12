@@ -1,15 +1,22 @@
-
-import React, { useRef, useEffect } from 'react';
-import {SafeAreaView, Text, View, StyleSheet, Dimensions, Animated, StatusBar, Image,} from 'react-native';
+import React, { useRef, useEffect, useState } from 'react';
+import {SafeAreaView, Text, View, StyleSheet, Dimensions, Animated, StatusBar, Image} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
 export default function App() {
   const navigation = useNavigation(); 
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateAnim = useRef(new Animated.Value(0)).current;
   const textFadeAnim = useRef(new Animated.Value(0)).current;
+  const [timeoutPassed, setTimeoutPassed] = useState(false);
 
   useEffect(() => {
+    if (timeoutPassed) {
+      // Si ya pasó el timeout, navega directamente al Login
+      navigation.replace('Login');  // Usamos replace en lugar de navigate
+      return;
+    }
+
     Animated.parallel([
       Animated.timing(scaleAnim, {
         toValue: 1,
@@ -45,15 +52,15 @@ export default function App() {
       useNativeDriver: true,
     }).start();
 
-   // Navega al Login después de 3 segundos
-   const timeout = setTimeout(() => {
-    navigation.navigate('Login');
-}, 4000);
+    // Navega al Login después de 3 segundos y establece que el timeout ha pasado
+    const timeout = setTimeout(() => {
+      setTimeoutPassed(true);
+      navigation.replace('Login');  // Usamos replace en lugar de navigate
+    }, 4000);
 
-// Limpia el timeout al desmontar el componente
-return () => clearTimeout(timeout);
-}, [navigation, scaleAnim, fadeAnim, translateAnim, textFadeAnim]);
-
+    // Limpia el timeout al desmontar el componente
+    return () => clearTimeout(timeout);
+  }, [navigation, scaleAnim, fadeAnim, translateAnim, textFadeAnim, timeoutPassed]);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons'; // Biblioteca de iconos
 import ViewShot from 'react-native-view-shot'; // Para capturar la pantalla
 import * as Sharing from 'expo-sharing'; // Para compartir la imagen
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DetalleDietaScreen = ({ route }) => {
   const { semana, comidas } = route.params || {};

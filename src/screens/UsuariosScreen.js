@@ -4,7 +4,7 @@ import axios from 'axios';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import UpdateUserScreen from './UpdateUserScreen'; 
+import UpdateUserScreen from './UpdateUserScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -13,10 +13,12 @@ const UsersList = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
 
+  // Listar usuarios
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('https://apirestgym-production-23c8.up.railway.app/listar_Usuarios');
+        const AsyncUser = await AsyncStorage.getItem('userUser');
+        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/listar_Usuarios/${AsyncUser}`);
         if (response.data && response.data.users) {
           setUsers(response.data.users);
         } else {
@@ -34,15 +36,25 @@ const UsersList = ({ navigation }) => {
     fetchUsers();
   }, []);
 
+  // Actualizar usuario, redirige la info a otro componente llamado UpdateUserScreen
   const handleUpdateUser = (user) => {
     navigation.navigate('ActualizarUsuario', { user }); // Navegar a la pantalla de actualización
   };
 
-  const handleDeleteUser = async (userId) => {
+  const handleDeleteUser = async (user) => {
+    console.log('Usuario:', user); // Verifica el contenido de `user`
     try {
-      const response = await axios.delete(`https://apirestgym-production-23c8.up.railway.app/eliminar_Usuarios/${userId}`);
+      const userName = user.user; // Asegúrate de que `user.user` no sea `undefined`
+      if (!userName) {
+        Alert.alert('Error', 'Nombre de usuario no disponible');
+        return;
+      }
+      const AsyncUserr = await AsyncStorage.getItem('userUser');
+      const url = `https://apirestgym-production-23c8.up.railway.app/eliminar_Usuarios/${userName}/${AsyncUserr}`;
+      console.log('Request URL:', url);
+      const response = await axios.delete(url);
       if (response.data && response.data.mensaje === 'Usuario eliminado correctamente') {
-        setUsers(users.filter((user) => user._id !== userId));
+        setUsers(users.filter((u) => u.user !== user.user));
         Alert.alert('Éxito', 'Usuario eliminado correctamente');
       } else {
         console.error('Error al eliminar usuario', response.data);
@@ -54,8 +66,39 @@ const UsersList = ({ navigation }) => {
     }
   };
 
-  const filteredUsers = users.filter((user) => 
-    user.nombre.toLowerCase().includes(searchText.toLowerCase()) || 
+// Actualizar suscripción
+const handleUpdateSubscription = async (user) => {
+  try {
+    const AsyncUser = await AsyncStorage.getItem('userUser');
+    if (!AsyncUser) {
+      throw new Error('No se encontró el usuario en AsyncStorage');
+    }
+    const url = `https://apirestgym-production-23c8.up.railway.app/actualizar_sus/${user.user}/${AsyncUser}`;
+    const response = await axios.put(url, { estado_suscripcion: 'activo' });
+
+    const successMessages = [
+      'Suscripción actualizada correctamente', 
+      'Suscripcion actualizada correctamente'
+    ];
+    
+    if (response.data && successMessages.includes(response.data.message)) {
+      setUsers(users.map((u) => 
+        u.user === user.user ? { ...u, estado_suscripcion: 'activo' } : u
+      ));
+      Alert.alert('Éxito', 'Suscripción actualizada correctamente');
+    } else {
+      console.error('Error al actualizar suscripción:', response.data);
+      Alert.alert('Error', 'No se pudo actualizar la suscripción');
+    }
+  } catch (error) {
+    console.error('Error al actualizar suscripción:', error);
+    Alert.alert('Error', 'No se pudo actualizar la suscripción');
+  }
+};
+
+  
+  const filteredUsers = users.filter((user) =>
+    user.nombre.toLowerCase().includes(searchText.toLowerCase()) ||
     user.user.toLowerCase().includes(searchText.toLowerCase())
   );
 
@@ -68,7 +111,7 @@ const UsersList = ({ navigation }) => {
       <Text style={styles.header}>Información Personal</Text>
       <TextInput
         style={styles.searchInput}
-        placeholder="Buscar usuario por nombrer"
+        placeholder="Buscar usuario por nombre"
         value={searchText}
         onChangeText={setSearchText}
       />
@@ -95,7 +138,12 @@ const UsersList = ({ navigation }) => {
               <TouchableOpacity onPress={() => handleUpdateUser(user)} style={styles.button}>
                 <Text style={styles.buttonText}>Actualizar</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDeleteUser(user._id)} style={styles.deleteButton}>
+              {user.estado_suscripcion === 'Inactivo' && (
+                <TouchableOpacity onPress={() => handleUpdateSubscription(user)} style={styles.updateSubscriptionButton}>
+                  <Text style={styles.buttonText}>Suscripción</Text>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity onPress={() => handleDeleteUser(user)} style={styles.deleteButton}>
                 <Text style={styles.buttonText}>Eliminar</Text>
               </TouchableOpacity>
             </View>
@@ -134,7 +182,7 @@ const UsuariosScreen = () => {
       <Stack.Screen
         name="ListaUsuarios"
         component={UsersList}
-        options={{ headerShown: false }} 
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ActualizarUsuario"
@@ -187,7 +235,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around', // Cambiado a 'space-around' para centrar los botones
     marginTop: 10,
   },
   button: {
@@ -202,18 +250,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 5,
   },
+  updateSubscriptionButton: {
+    backgroundColor: '#84dd55', 
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+  },  
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
   },
   logoutButton: {
     marginRight: 10,
-    padding: 10,
-    backgroundColor: '#e76755',
-    borderRadius: 5,
   },
   logoutButtonText: {
-    color: 'white',
+    color: '#fff',
     fontWeight: 'bold',
   },
 });

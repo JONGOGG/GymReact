@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import ReButton from '../components/ReButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UpdateUserScreen = ({ route, navigation }) => {
   const { user } = route.params;
@@ -24,8 +25,9 @@ const UpdateUserScreen = ({ route, navigation }) => {
 
   const handleUpdateUser = async () => {
     try {
+      const AsyncUser = await AsyncStorage.getItem('userUser');
       const userName = user.user;
-      const url = `https://apirestgym-production-23c8.up.railway.app/actualizar/${userName}`;
+      const url = `https://apirestgym-production-23c8.up.railway.app/actualizar/${userName}/${AsyncUser}`;
       console.log('Request URL:', url);
 
       const response = await axios.put(url, {
