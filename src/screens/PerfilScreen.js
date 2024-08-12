@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TextInput, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { Picker } from '@react-native-picker/picker';
 import ReButton from '../components/ReButton';
+import { useNavigation } from '@react-navigation/native';
 
 const PerfilScreen = () => {
   const [usuario, setUsuario] = useState(null);
@@ -18,7 +19,31 @@ const PerfilScreen = () => {
   const [estatura, setEstatura] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-  const [alertType, setAlertType] = useState('success'); // 'success' o 'error'
+  const [alertType, setAlertType] = useState('success');
+
+
+  const navigation = useNavigation();
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userrol');
+    await AsyncStorage.removeItem('userUser');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -230,6 +255,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 20,
+  },
+  logoutButton: {
+    marginRight: 10,
+    padding: 10,
+    backgroundColor: '#e76755',
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

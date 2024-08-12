@@ -42,9 +42,9 @@ const UsersList = ({ navigation }) => {
   };
 
   const handleDeleteUser = async (user) => {
-    console.log('Usuario:', user); // Verifica el contenido de `user`
+    console.log('Usuario:', user); 
     try {
-      const userName = user.user; // Asegúrate de que `user.user` no sea `undefined`
+      const userName = user.user; 
       if (!userName) {
         Alert.alert('Error', 'Nombre de usuario no disponible');
         return;
@@ -262,9 +262,12 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     marginRight: 10,
+    padding: 10,
+    backgroundColor: '#e76755',
+    borderRadius: 5,
   },
   logoutButtonText: {
-    color: '#fff',
+    color: 'white',
     fontWeight: 'bold',
   },
 });
