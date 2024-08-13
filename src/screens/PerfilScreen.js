@@ -21,7 +21,6 @@ const PerfilScreen = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
 
-
   const navigation = useNavigation();
 
   const handleLogout = async () => {
@@ -44,12 +43,20 @@ const PerfilScreen = () => {
     });
   }, [navigation]);
 
-
   useEffect(() => {
     const fetchUserData = async () => {
       const AsyncUser = await AsyncStorage.getItem('userUser');
+      const tokens = await AsyncStorage.getItem('userToken');
+      // Configuración de los headers
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
+    
+        }
+      };
       try {
-        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/perfil/${AsyncUser}`);
+        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/perfil/${AsyncUser}`, header);
         const data = response.data;
 
         setUsuario(data);
@@ -73,11 +80,23 @@ const PerfilScreen = () => {
   const actualizarDatos = async () => {
     try {
       const AsyncUser = await AsyncStorage.getItem('userUser');
+      const tokens = await AsyncStorage.getItem('userToken');
+
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
+    
+        }
+      };
+
       await axios.put(`https://apirestgym-production-23c8.up.railway.app/actualizar_info/${AsyncUser}`, {
         telefono,
         peso,
         estatura,
-      });
+      },
+      header  
+    );
       setAlertMessage('Datos actualizados correctamente');
       setAlertType('success');
       setShowAlert(true);

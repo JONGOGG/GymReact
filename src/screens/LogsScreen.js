@@ -14,14 +14,22 @@ const LogsScreen = () => {
     setLoading(true);
     try {
       const AsyncUser = await AsyncStorage.getItem('userUser');
-
+      const tokens = await AsyncStorage.getItem('userToken');
+      // Configuración de los headers
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
+    
+        }
+      };
       if (!AsyncUser) {
         console.error('No se encontró el usuario en AsyncStorage.');
         setLoading(false);
         return;
       }
 
-      const response = await fetch(`https://apirestgym-production-23c8.up.railway.app/logs/${AsyncUser}`);
+      const response = await fetch(`https://apirestgym-production-23c8.up.railway.app/logs/${AsyncUser}`, header);
       const data = await response.json();
 
       if (data && Array.isArray(data.Acciones)) {

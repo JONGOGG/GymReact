@@ -27,6 +27,15 @@ const UpdateUserScreen = ({ route, navigation }) => {
     try {
       const AsyncUser = await AsyncStorage.getItem('userUser');
       const userName = user.user;
+      const tokens = await AsyncStorage.getItem('userToken');
+      // Configuración de los headers
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
+    
+        }
+      };
       const url = `https://apirestgym-production-23c8.up.railway.app/actualizar/${userName}/${AsyncUser}`;
       console.log('Request URL:', url);
 
@@ -39,7 +48,7 @@ const UpdateUserScreen = ({ route, navigation }) => {
         estatura: parseFloat(estatura),
         user: userr,
         pass,
-      });
+      }, header);
 
       console.log('Response Data:', response.data);
 

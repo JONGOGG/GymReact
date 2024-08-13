@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Image, Alert, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Image, TextInput } from 'react-native';
 import axios from 'axios';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import UpdateUserScreen from './UpdateUserScreen';
 
 const Stack = createNativeStackNavigator();
@@ -12,91 +13,140 @@ const UsersList = ({ navigation }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('success');
 
-  // Listar usuarios
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const AsyncUser = await AsyncStorage.getItem('userUser');
-        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/listar_Usuarios/${AsyncUser}`);
-        if (response.data && response.data.users) {
-          setUsers(response.data.users);
-        } else {
-          console.error('Formato de respuesta incorrecto', response.data);
-          Alert.alert('Error', 'Formato de respuesta incorrecto');
+  const fetchUsers = async () => {
+    console.log('Fetching users...');
+    setLoading(true);
+    try {
+      const AsyncUser = await AsyncStorage.getItem('userUser');
+      const tokens = await AsyncStorage.getItem('userToken');
+      // Configuración de los headers
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
+    
         }
-      } catch (error) {
-        console.error('Error al listar usuarios:', error);
-        Alert.alert('Error', 'No se pudo obtener la lista de usuarios');
-      } finally {
-        setLoading(false);
+      };
+      console.log('AsyncUser:', AsyncUser);
+      const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/listar_Usuarios/${AsyncUser}`, header);
+      console.log('Response:', response.data);
+      if (response.data && response.data.users) {
+        setUsers(response.data.users);
+      } else {
+        console.error('Formato de respuesta incorrecto', response.data);
+        setAlertMessage('Formato de respuesta incorrecto');
+        setAlertType('error');
+        setShowAlert(true);
       }
-    };
+    } catch (error) {
+      console.error('Error al listar usuarios:', error);
+      setAlertMessage('No se pudo obtener la lista de usuarios');
+      setAlertType('error');
+      setShowAlert(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchUsers();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('Screen is focused');
+      fetchUsers();
+    }, [])
+  );
 
-  // Actualizar usuario, redirige la info a otro componente llamado UpdateUserScreen
   const handleUpdateUser = (user) => {
-    navigation.navigate('ActualizarUsuario', { user }); // Navegar a la pantalla de actualización
+    navigation.navigate('ActualizarUsuario', { user });
   };
 
   const handleDeleteUser = async (user) => {
-    console.log('Usuario:', user); 
     try {
-      const userName = user.user; 
+      const userName = user.user;
       if (!userName) {
-        Alert.alert('Error', 'Nombre de usuario no disponible');
+        setAlertMessage('Nombre de usuario no disponible');
+        setAlertType('error');
+        setShowAlert(true);
         return;
       }
       const AsyncUserr = await AsyncStorage.getItem('userUser');
+      const tokens = await AsyncStorage.getItem('userToken');
+      // Configuración de los headers
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
+    
+        }
+      };
       const url = `https://apirestgym-production-23c8.up.railway.app/eliminar_Usuarios/${userName}/${AsyncUserr}`;
-      console.log('Request URL:', url);
-      const response = await axios.delete(url);
+      const response = await axios.delete(url, header);
       if (response.data && response.data.mensaje === 'Usuario eliminado correctamente') {
         setUsers(users.filter((u) => u.user !== user.user));
-        Alert.alert('Éxito', 'Usuario eliminado correctamente');
+        setAlertMessage('Usuario eliminado correctamente');
+        setAlertType('success');
+        setShowAlert(true);
       } else {
         console.error('Error al eliminar usuario', response.data);
-        Alert.alert('Error', 'No se pudo eliminar el usuario');
+        setAlertMessage('No se pudo eliminar el usuario');
+        setAlertType('error');
+        setShowAlert(true);
       }
     } catch (error) {
       console.error('Error al eliminar usuario:', error);
-      Alert.alert('Error', 'No se pudo eliminar el usuario');
+      setAlertMessage('No se pudo eliminar el usuario');
+      setAlertType('error');
+      setShowAlert(true);
     }
   };
 
-// Actualizar suscripción
-const handleUpdateSubscription = async (user) => {
-  try {
-    const AsyncUser = await AsyncStorage.getItem('userUser');
-    if (!AsyncUser) {
-      throw new Error('No se encontró el usuario en AsyncStorage');
-    }
-    const url = `https://apirestgym-production-23c8.up.railway.app/actualizar_sus/${user.user}/${AsyncUser}`;
-    const response = await axios.put(url, { estado_suscripcion: 'activo' });
-
-    const successMessages = [
-      'Suscripción actualizada correctamente', 
-      'Suscripcion actualizada correctamente'
-    ];
+  const handleUpdateSubscription = async (user) => {
+    try {
+      const AsyncUser = await AsyncStorage.getItem('userUser');
+      const tokens = await AsyncStorage.getItem('userToken');
+      // Configuración de los headers
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
     
-    if (response.data && successMessages.includes(response.data.message)) {
-      setUsers(users.map((u) => 
-        u.user === user.user ? { ...u, estado_suscripcion: 'activo' } : u
-      ));
-      Alert.alert('Éxito', 'Suscripción actualizada correctamente');
-    } else {
-      console.error('Error al actualizar suscripción:', response.data);
-      Alert.alert('Error', 'No se pudo actualizar la suscripción');
-    }
-  } catch (error) {
-    console.error('Error al actualizar suscripción:', error);
-    Alert.alert('Error', 'No se pudo actualizar la suscripción');
-  }
-};
+        }
+      };
+      if (!AsyncUser) {
+        throw new Error('No se encontró el usuario en AsyncStorage');
+      }
+      const url = `https://apirestgym-production-23c8.up.railway.app/actualizar_sus/${user.user}/${AsyncUser}`;
+      const response = await axios.put(url, { estado_suscripcion: 'activo' }, header);
 
-  
+      const successMessages = [
+        'Suscripción actualizada correctamente', 
+        'Suscripcion actualizada correctamente'
+      ];
+
+      if (response.data && successMessages.includes(response.data.message)) {
+        setUsers(users.map((u) => 
+          u.user === user.user ? { ...u, estado_suscripcion: 'activo' } : u
+        ));
+        setAlertMessage('Suscripción actualizada correctamente');
+        setAlertType('success');
+        setShowAlert(true);
+      } else {
+        console.error('Error al actualizar suscripción:', response.data);
+        setAlertMessage('No se pudo actualizar la suscripción');
+        setAlertType('error');
+        setShowAlert(true);
+      }
+    } catch (error) {
+      console.error('Error al actualizar suscripción:', error);
+      setAlertMessage('No se pudo actualizar la suscripción');
+      setAlertType('error');
+      setShowAlert(true);
+    }
+  };
+
   const filteredUsers = users.filter((user) =>
     user.nombre.toLowerCase().includes(searchText.toLowerCase()) ||
     user.user.toLowerCase().includes(searchText.toLowerCase())
@@ -150,6 +200,21 @@ const handleUpdateSubscription = async (user) => {
           </View>
         ))}
       </ScrollView>
+
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title={alertType === 'success' ? 'Éxito' : 'Error'}
+        message={alertMessage}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="OK"
+        confirmButtonColor={alertType === 'success' ? '#4CAF50' : '#F44336'}
+        onConfirmPressed={() => {
+          setShowAlert(false);
+        }}
+      />
     </View>
   );
 };
@@ -235,7 +300,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around', // Cambiado a 'space-around' para centrar los botones
+    justifyContent: 'space-around',
     marginTop: 10,
   },
   button: {
@@ -251,11 +316,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   updateSubscriptionButton: {
-    backgroundColor: '#84dd55', 
+    backgroundColor: '#84dd55',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 5,
-  },  
+  },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',

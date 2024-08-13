@@ -33,12 +33,20 @@ const DietasScreen = ({ navigation }) => {
     const fetchDieta = async () => {
       try {
         const AsyncUser = await AsyncStorage.getItem('userUser');
-
+        const tokens = await AsyncStorage.getItem('userToken');
+        // Configuración de los headers
+        const header = {
+          headers: {
+            'x-access-token': `${tokens}`,  
+            'Content-Type': 'application/json',  
+      
+          }
+        };
         if (!AsyncUser) {
           throw new Error('Usuario no encontrado en el almacenamiento.');
         }
 
-        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/dieta/${AsyncUser}`);
+        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/dieta/${AsyncUser}`, header);
         
         if (response.data) {
           setDieta(response.data);

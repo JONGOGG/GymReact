@@ -35,25 +35,36 @@ const RutinasScreen = ({ navigation }) => {
   // useEffect para cargar la rutina cuando el componente se monta
   useEffect(() => {
     // Función para cargar el usuario y obtener la rutina
-    const fetchRutina = async () => {
-      try {
-        // Recupera el usuario del AsyncStorage
-        const AsyncUser = await AsyncStorage.getItem('userUser');
-        
-        // Verifica si el usuario está almacenado
-        if (!AsyncUser) {
-          throw new Error('Usuario no encontrado en el almacenamiento.');
-        }
+   const fetchRutina = async () => {
+  try {
+    const AsyncUser = await AsyncStorage.getItem('userUser');
+    const token = await AsyncStorage.getItem('userToken');
 
-        // Realiza la solicitud al servidor usando el usuario almacenado
-        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/rutina/${AsyncUser}`);
-        setRutina(response.data.rutina);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
+    if (!AsyncUser || !token) {
+      throw new Error('Usuario o token no encontrado.');
+    }
+
+    console.log('Token:', token);  // Verifica el valor del token
+
+    const header = {
+      headers: {
+        'Authorization': `${token}`,
+        'Content-Type': 'application/json',
       }
     };
+
+    console.log('Header:', header);  // Verifica la configuración del encabezado
+
+    const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/rutina/${AsyncUser}`, header);
+    console.log('Respuesta:', response.data);  // Verifica la respuesta
+    setRutina(response.data.rutina);
+  } catch (err) {
+    console.error('Error al realizar la solicitud:', err.message);
+    setError(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
     fetchRutina();
   }, []);

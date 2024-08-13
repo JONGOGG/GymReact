@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, SafeAreaView, ScrollView, Image, StyleSheet, Text, TouchableOpacity  } from 'react-native';
+import { View, TextInput, SafeAreaView, ScrollView, Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
@@ -23,9 +23,10 @@ const RegistroScreen = () => {
   const [alertTitle, setAlertTitle] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('success');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigation = useNavigation();
- // Función de cierre de sesión
+
   const handleLogout = async () => {
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('userrol');
@@ -36,7 +37,6 @@ const RegistroScreen = () => {
     });
   };
 
-  // Configurar el botón de cierre de sesión en el header
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -47,11 +47,53 @@ const RegistroScreen = () => {
     });
   }, [navigation]);
 
-
-    
   const handleRegister = async () => {
+    if (isSubmitting) return;
+
+    // Validaciones
+    if (!nombre || !apellidos || !email || !telefono || !sexo || !peso || !estatura || !user || !pass || !tipo_usuario) {
+      setAlertTitle('Error de validación');
+      setAlertMessage('Todos los campos son obligatorios.');
+      setAlertType('error');
+      setShowAlert(true);
+      return;
+    }
+
+    // Validar email con dominios permitidos
+  const emailRegex = /^[^\s@]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
+  if (!emailRegex.test(email)) {
+    setAlertTitle('Error de validación');
+    setAlertMessage('Ingrese un email válido con dominios @gmail.com, @yahoo.com, o @outlook.com.');
+    setAlertType('error');
+    setShowAlert(true);
+    return;
+  }
+
+
+    // Validar teléfono
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(telefono)) {
+      setAlertTitle('Error de validación');
+      setAlertMessage('Ingrese un número de teléfono válido (10 dígitos).');
+      setAlertType('error');
+      setShowAlert(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
       const AsyncUser = await AsyncStorage.getItem('userUser');
+      const tokens = await AsyncStorage.getItem('userToken');
+      // Configuración de los headers
+      const header = {
+        headers: {
+          'x-access-token': `${tokens}`,  
+          'Content-Type': 'application/json',  
+    
+        }
+      };
+
       const response = await axios.post(`https://apirestgym-production-23c8.up.railway.app/registro/${AsyncUser}`, {
         nombre,
         apellidos,
@@ -63,13 +105,26 @@ const RegistroScreen = () => {
         tipo_usuario,
         user,
         pass
-      });
+      },
+      header  
+    );
 
       if (response.status === 200) {
         const { title, alertMessage } = response.data;
         setAlertTitle(title);
         setAlertMessage(alertMessage);
         setAlertType('success');
+        // Solo limpiar los campos si el registro es exitoso
+        setNombre('');
+        setApellidos('');
+        setEmail('');
+        setTelefono('');
+        setSexo('');
+        setPeso('');
+        setEstatura('');
+        setUser('');
+        setPass('');
+        setTipoUsuario('');
       } else {
         setAlertTitle('Registro Error');
         setAlertMessage('Hubo un error durante el registro.');
@@ -81,6 +136,7 @@ const RegistroScreen = () => {
       setAlertType('error');
       console.error(error);
     } finally {
+      setIsSubmitting(false);
       setShowAlert(true);
     }
   };
@@ -138,6 +194,7 @@ const RegistroScreen = () => {
               placeholder="Ingrese su teléfono"
               style={styles.input}
               placeholderTextColor="rgba(0, 0, 0, 0.5)"
+              keyboardType="numeric"
             />
           </View>
           <View style={styles.inputGroup}>
@@ -214,13 +271,18 @@ const RegistroScreen = () => {
                 onValueChange={(itemValue) => setTipoUsuario(itemValue)}
                 style={styles.picker}
               >
-                <Picker.Item label="Usuer/Admin" value="" />
-                <Picker.Item label="Admin" value="admin" />
-                <Picker.Item label="Client" value="client" />
+                <Picker.Item label="Selecciona un rol..." value="" />
+                <Picker.Item label="Administrador" value="Administrador" />
+                <Picker.Item label="Usuario" value="Usuario" />
               </Picker>
             </View>
           </View>
-          <ReButton title="Registrar" style={styles.button} onPress={handleRegister} />
+          <ReButton
+            title="Registrar"
+            style={styles.button}
+            onPress={handleRegister}
+            disabled={isSubmitting}
+          />
         </View>
       </ScrollView>
       <AwesomeAlert
@@ -232,7 +294,7 @@ const RegistroScreen = () => {
         closeOnHardwareBackPress={false}
         showConfirmButton={true}
         confirmText="OK"
-        confirmButtonColor="#84dd55"
+        confirmButtonColor={alertType === 'success' ? '#4CAF50' : '#F44336'}
         onConfirmPressed={() => setShowAlert(false)}
       />
     </SafeAreaView>
