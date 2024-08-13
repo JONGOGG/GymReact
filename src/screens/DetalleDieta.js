@@ -57,7 +57,7 @@ const DetalleDietaScreen = ({ route }) => {
   if (!semana || !comidas) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>No se ha seleccionado ninguna dieta.</Text>
+        <Text style={styles.errorText}> Selecciona un dieta en el apartado de DIETAS</Text>
       </View>
     );
   }
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: 'red',
+    color: '#000',
     textAlign: 'center',
     marginTop: 50,
   },

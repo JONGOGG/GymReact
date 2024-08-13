@@ -1,20 +1,16 @@
 import React, { useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // Biblioteca de iconos
-import ViewShot from 'react-native-view-shot'; // Para capturar la pantalla
-import * as Sharing from 'expo-sharing'; // Para compartir la imagen
+import Icon from 'react-native-vector-icons/Ionicons';
+import ViewShot from 'react-native-view-shot';
+import * as Sharing from 'expo-sharing';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
 const DetalleEjercicioScreen = ({ route }) => {
   const { dia, ejercicios } = route.params || {};
-  const viewShotRef = useRef(); // Referencia para la vista que vamos a capturar
-
-  // Función para formatear y capitalizar el nombre del día
-  const formatearDia = (dia) => {
-    return dia.replace(/^dia\d+_/, '').replace(/_/g, ' ').toUpperCase();
-  };
+  const viewShotRef = useRef();
   const navigation = useNavigation();
+
   const handleLogout = async () => {
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('userrol');
@@ -25,7 +21,6 @@ const DetalleEjercicioScreen = ({ route }) => {
     });
   };
 
-  // Configurar el botón de cierre de sesión en el header
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -36,16 +31,10 @@ const DetalleEjercicioScreen = ({ route }) => {
     });
   }, [navigation]);
 
-
-  // Función para capturar la pantalla y compartirla
   const compartirRutina = async () => {
     try {
-      // Captura la vista como una imagen
       const uri = await viewShotRef.current.capture();
-      
-      // Verifica si el dispositivo puede compartir archivos
       if (await Sharing.isAvailableAsync()) {
-        // Comparte la imagen capturada
         await Sharing.shareAsync(uri, {
           dialogTitle: 'Compartir Rutina de Ejercicio',
           mimeType: 'image/png',
@@ -58,24 +47,21 @@ const DetalleEjercicioScreen = ({ route }) => {
     }
   };
 
-  // Si no se proporciona día ni ejercicios, muestra un mensaje de error
   if (!dia || !ejercicios) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>
-          No has seleccionado ningún ejercicio en el apartado de RUTINAS.
+        Selecciona un ejercicio en el apartado de RUTINAS
         </Text>
       </View>
     );
   }
 
-  // Filtra los ejercicios válidos
   const ejerciciosValidos = Object.keys(ejercicios).filter((key) => {
     const ejercicio = ejercicios[key];
     return ejercicio.nombre && ejercicio.series && ejercicio.repeticiones;
   });
 
-  // Si no hay ejercicios válidos, muestra un mensaje de error
   if (ejerciciosValidos.length === 0) {
     return (
       <View style={styles.container}>
@@ -84,12 +70,22 @@ const DetalleEjercicioScreen = ({ route }) => {
     );
   }
 
-  // Renderiza la lista de ejercicios
+  const obtenerImagenEjercicio = (nombreEjercicio) => {
+    const imagenesEjercicios = {
+      'Sentadillas': 'https://drive.google.com/uc?export=view&id=1A2B3C4D5E6F7G8H',
+      'Flexiones': 'https://drive.google.com/uc?export=view&id=2B3C4D5E6F7G8H1A',
+      'Jalones al pecho': 'https://ji323.b-cdn.net/img/Jalonesalpecho.png',
+      // Añade más ejercicios y sus imágenes de Google Drive aquí
+    };
+
+    return imagenesEjercicios[nombreEjercicio] || 'https://via.placeholder.com/150';
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }} style={styles.captureContainer}>
-          <Text style={styles.headerText}>{formatearDia(dia)}</Text>
+          <Text style={styles.headerText}>{dia.replace(/^dia\d+_/, '').replace(/_/g, ' ').toUpperCase()}</Text>
           {ejerciciosValidos.map((key, idx) => (
             <View key={idx} style={styles.exerciseContainer}>
               <View style={styles.exerciseHeader}>
@@ -97,13 +93,11 @@ const DetalleEjercicioScreen = ({ route }) => {
                 <Text style={styles.exerciseName}>{ejercicios[key].nombre}</Text>
               </View>
 
-              {/* Imagen del ejercicio */}
               <Image
-                source={{ uri: ejercicios[key].imagen || 'https://via.placeholder.com/150' }}
+                source={{ uri: obtenerImagenEjercicio(ejercicios[key].nombre) }}
                 style={styles.exerciseImage}
               />
 
-              {/* Detalles del ejercicio */}
               <Text style={styles.exerciseDetails}>Series: {ejercicios[key].series}</Text>
               <Text style={styles.exerciseDetails}>Repeticiones: {ejercicios[key].repeticiones}</Text>
               {ejercicios[key].instrucciones ? (
@@ -129,7 +123,6 @@ const DetalleEjercicioScreen = ({ route }) => {
             </View>
           ))}
 
-          {/* Botón de Compartir */}
           <View style={styles.shareButtonContainer}>
             <TouchableOpacity style={styles.button} onPress={compartirRutina}>
               <Icon name="share-social" size={24} color="#fff" />
@@ -187,7 +180,7 @@ const styles = StyleSheet.create({
   },
   exerciseImage: {
     width: '100%',
-    height: 150,
+    height: 200,
     borderRadius: 10,
     marginBottom: 15,
   },
@@ -219,7 +212,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: 'red',
+    color: '#000',
     textAlign: 'center',
     marginTop: 50,
   },
