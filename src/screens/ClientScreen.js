@@ -48,7 +48,11 @@ const ClientScreen = () => {
               iconName = 'body-outline';
             } else if (route.name === 'Perfil') {
               iconName = 'person-outline';
+            } else if (route.name === 'DetalleDieta') {
+              iconName = 'restaurant-outline';
             }
+            
+            
             return <Ionicons name={iconName} size={size} color={color} />;
           },
           tabBarInactiveTintColor: 'gray',

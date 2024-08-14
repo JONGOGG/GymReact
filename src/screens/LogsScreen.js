@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useNavigation } from '@react-navigation/native';
 
 const LogsScreen = () => {
   const [logs, setLogs] = useState([]);
@@ -9,6 +10,29 @@ const LogsScreen = () => {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const navigation = useNavigation();
+
+//Borar datos del astyncstorage al cerrar sesion
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('userToken');
+    await AsyncStorage.removeItem('userrol');
+    await AsyncStorage.removeItem('userUser');
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }],
+    });
+  };
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Cerrar sesión</Text>
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
 
   const fetchLogs = async () => {
     setLoading(true);
@@ -191,6 +215,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
     fontSize: 16,
+  },
+  logoutButton: {
+    marginRight: 10,
+    padding: 10,
+    backgroundColor: '#e76755',
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

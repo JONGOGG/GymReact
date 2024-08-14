@@ -99,7 +99,7 @@ const DietasScreen = ({ navigation }) => {
       <View style={styles.planHeader}>
         <Image source={require('../../assets/img/Dietas.jpg')} style={styles.headerImage} />
         <View style={styles.headerOverlay}>
-          <Text style={styles.planTitle}>{dieta.nombreDietas}</Text>
+          <Text style={styles.planTitle}>Dietas</Text>
           <Text style={styles.planObjective}>{dieta.objetivo}</Text>
         </View>
       </View>

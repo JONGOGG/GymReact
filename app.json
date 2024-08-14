@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "GymReact-app",
+    "name": "Gym Az",
     "slug": "GymReact-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,7 +26,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "6bcfe46b-e93a-45ec-b8cc-f3fbee62d61b"
+        "projectId": "02ccfe06-d4fb-4c1b-83a4-892ad175cd72"
       }
     }
   }
