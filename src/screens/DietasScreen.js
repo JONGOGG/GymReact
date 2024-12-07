@@ -46,7 +46,7 @@ const DietasScreen = ({ navigation }) => {
           throw new Error('Usuario no encontrado en el almacenamiento.');
         }
 
-        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/dieta/${AsyncUser}`, header);
+        const response = await axios.get(`https://apirestgym-production-1823.up.railway.app/dieta/${AsyncUser}`, header);
         
         if (response.data) {
           setDieta(response.data);

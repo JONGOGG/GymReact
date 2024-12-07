@@ -32,7 +32,7 @@ const UsersList = ({ navigation }) => {
         }
       };
       console.log('AsyncUser:', AsyncUser);
-      const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/listar_Usuarios/${AsyncUser}`, header);
+      const response = await axios.get(`https://apirestgym-production-1823.up.railway.app/listar_Usuarios/${AsyncUser}`, header);
       console.log('Response:', response.data);
       if (response.data && response.data.users) {
         setUsers(response.data.users);
@@ -82,7 +82,7 @@ const UsersList = ({ navigation }) => {
     
         }
       };
-      const url = `https://apirestgym-production-23c8.up.railway.app/eliminar_Usuarios/${userName}/${AsyncUserr}`;
+      const url = `https://apirestgym-production-1823.up.railway.app/eliminar_Usuarios/${userName}/${AsyncUserr}`;
       const response = await axios.delete(url, header);
       if (response.data && response.data.mensaje === 'Usuario eliminado correctamente') {
         setUsers(users.filter((u) => u.user !== user.user));
@@ -118,7 +118,7 @@ const UsersList = ({ navigation }) => {
       if (!AsyncUser) {
         throw new Error('No se encontró el usuario en AsyncStorage');
       }
-      const url = `https://apirestgym-production-23c8.up.railway.app/actualizar_sus/${user.user}/${AsyncUser}`;
+      const url = `https://apirestgym-production-1823.up.railway.app/actualizar_sus/${user.user}/${AsyncUser}`;
       const response = await axios.put(url, { estado_suscripcion: 'activo' }, header);
 
       const successMessages = [

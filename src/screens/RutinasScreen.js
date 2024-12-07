@@ -55,7 +55,7 @@ const RutinasScreen = ({ navigation }) => {
 
     console.log('Header:', header);  // Verifica la configuración del encabezado
 
-    const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/rutina/${AsyncUser}`, header);
+    const response = await axios.get(`https://apirestgym-production-1823.up.railway.app/rutina/${AsyncUser}`, header);
     console.log('Respuesta:', response.data);  // Verifica la respuesta
     setRutina(response.data.rutina);
   } catch (err) {

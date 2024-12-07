@@ -53,7 +53,7 @@ const LogsScreen = () => {
         return;
       }
 
-      const response = await fetch(`https://apirestgym-production-23c8.up.railway.app/logs/${AsyncUser}`, header);
+      const response = await fetch(`https://apirestgym-production-1823.up.railway.app/logs/${AsyncUser}`, header);
       const data = await response.json();
 
       if (data && Array.isArray(data.Acciones)) {

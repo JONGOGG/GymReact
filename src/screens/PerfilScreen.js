@@ -56,7 +56,7 @@ const PerfilScreen = () => {
         }
       };
       try {
-        const response = await axios.get(`https://apirestgym-production-23c8.up.railway.app/perfil/${AsyncUser}`, header);
+        const response = await axios.get(`https://apirestgym-production-1823.up.railway.app/perfil/${AsyncUser}`, header);
         const data = response.data;
 
         setUsuario(data);
@@ -90,7 +90,7 @@ const PerfilScreen = () => {
         }
       };
 
-      await axios.put(`https://apirestgym-production-23c8.up.railway.app/actualizar_info/${AsyncUser}`, {
+      await axios.put(`https://apirestgym-production-1823.up.railway.app/actualizar_info/${AsyncUser}`, {
         telefono,
         peso,
         estatura,

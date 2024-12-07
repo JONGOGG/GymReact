@@ -94,7 +94,7 @@ const RegistroScreen = () => {
         }
       };
 
-      const response = await axios.post(`https://apirestgym-production-23c8.up.railway.app/registro/${AsyncUser}`, {
+      const response = await axios.post(`https://apirestgym-production-1823.up.railway.app/registro/${AsyncUser}`, {
         nombre,
         apellidos,
         email,

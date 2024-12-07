@@ -71,7 +71,7 @@ const UpdateUserScreen = ({ route, navigation }) => {
     
         }
       };
-      const url = `https://apirestgym-production-23c8.up.railway.app/actualizar/${userName}/${AsyncUser}`;
+      const url = `https://apirestgym-production-1823.up.railway.app/actualizar/${userName}/${AsyncUser}`;
       console.log('Request URL:', url);
 
       const response = await axios.put(url, {

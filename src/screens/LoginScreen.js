@@ -27,7 +27,7 @@ const LoginScreen = () => {
     }
 
     try {
-      const response = await axios.post('https://apirestgym-production-23c8.up.railway.app/login', 
+      const response = await axios.post('https://apirestgym-production-1823.up.railway.app/login', 
         { user, pass });
 
       switch (response.status) {
