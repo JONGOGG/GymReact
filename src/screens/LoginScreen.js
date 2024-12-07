@@ -38,7 +38,7 @@ const LoginScreen = () => {
           await AsyncStorage.setItem('userUser', usuario);
           navigation.reset({
             index: 0,
-            routes: [{ name: rol === 'admin' ? 'Admin' : 'Client' }],
+            routes: [{ name: rol === 'Admin' ? 'Admin' : 'Client' }],
           });
           break;
         case 204:

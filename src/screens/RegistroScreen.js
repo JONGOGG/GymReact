@@ -108,6 +108,7 @@ const RegistroScreen = () => {
       },
       header  
     );
+    console.log('Respuesta:', response);  
 
       if (response.status === 200) {
         const { title, alertMessage } = response.data;
@@ -272,8 +273,8 @@ const RegistroScreen = () => {
                 style={styles.picker}
               >
                 <Picker.Item label="Selecciona un rol..." value="" />
-                <Picker.Item label="Administrador" value="Administrador" />
-                <Picker.Item label="Usuario" value="Usuario" />
+                <Picker.Item label="Administrador" value="Admin" />
+                <Picker.Item label="Usuario" value="Client" />
               </Picker>
             </View>
           </View>

@@ -17,6 +17,8 @@ const UpdateUserScreen = ({ route, navigation }) => {
   const [estatura, setEstatura] = useState(user.estatura);
   const [userr, setuserr] = useState(user.user);
   const [pass, setpass] = useState(user.pass);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const [showAlert, setShowAlert] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
@@ -24,6 +26,39 @@ const UpdateUserScreen = ({ route, navigation }) => {
   const [alertType, setAlertType] = useState('success');
 
   const handleUpdateUser = async () => {
+    if (isSubmitting) return;
+
+    // Validaciones
+    if (!nombre || !apellidos || !email || !telefono || !peso || !estatura || !userr || !pass) {
+      setAlertTitle('Error de validación');
+      setAlertMessage('Todos los campos son obligatorios.');
+      setAlertType('error');
+      setShowAlert(true);
+      return;
+    }
+
+    // Validar email con dominios permitidos
+    const emailRegex = /^[^\s@]+@(gmail\.com|yahoo\.com|outlook\.com)$/;
+    if (!emailRegex.test(email)) {
+      setAlertTitle('Error de validación');
+      setAlertMessage('Ingrese un email válido con dominios @gmail.com, @yahoo.com, o @outlook.com.');
+      setAlertType('error');
+      setShowAlert(true);
+      return;
+    }
+
+    // Validar teléfono
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(telefono)) {
+      setAlertTitle('Error de validación');
+      setAlertMessage('Ingrese un número de teléfono válido (10 dígitos).');
+      setAlertType('error');
+      setShowAlert(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
       const AsyncUser = await AsyncStorage.getItem('userUser');
       const userName = user.user;
@@ -70,8 +105,7 @@ const UpdateUserScreen = ({ route, navigation }) => {
       }
     } catch (error) {
       if (error.response) {
-        console.error('Error del servidor:', error.response.data);
-        setAlertTitle('Error del Servidor');
+        setAlertTitle('Error');
         setAlertMessage(error.response.data.message || 'Ocurrió un error');
         setAlertType('error');
       } else if (error.request) {
